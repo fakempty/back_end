@@ -1,0 +1,46 @@
+server:
+  port: 8081
+
+spring:
+  datasource:
+    url: jdbc:postgresql://localhost:5432/back_end1
+    username: postgres
+    password: postgres
+
+  jpa:
+    hibernate:
+      # Змінюємо на update, щоб уникнути помилок валідації при першому запуску, або залишаємо validate, якщо Liquibase налаштований вірно
+      ddl-auto: update
+    show-sql: true
+    properties:
+      hibernate:
+        dialect: org.hibernate.dialect.PostgreSQLDialect
+
+  # Управління міграціями бази даних через Liquibase (Вимога Лаб №1, AC2)
+  liquibase:
+    change-log: classpath:db/changelog/db.changelog-master.yaml
+
+  # Налаштування подвійної автентифікації: OIDC (для UI/браузера) та JWT (для API/Postman)
+  security:
+    oauth2:
+      resourceserver:
+        jwt:
+          issuer-uri: http://localhost:8080/realms/master
+      client:
+        registration:
+          keycloak:
+            client-id: back-end1-client
+            client-secret: secret
+            authorization-grant-type: authorization_code
+            redirect-uri: "{baseUrl}/login/oauth2/code/{registrationId}"
+            scope: openid,profile,email
+        provider:
+          keycloak:
+            authorization-uri: http://localhost:8080/realms/master/protocol/openid-connect/auth
+            token-uri: http://localhost:8080/realms/master/protocol/openid-connect/token
+            user-info-uri: http://localhost:8080/realms/master/protocol/openid-connect/userinfo
+            user-name-attribute: preferred_username
+            jwk-set-uri: http://localhost:8080/realms/master/protocol/openid-connect/certs
+    # Додано для запобігання збоїв при відсутності Keycloak під час запуску
+    check-token-endpoint:
+      enabled: false

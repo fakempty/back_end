@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html lang="uk">
+<head>
+    <meta charset="UTF-8">
+    <title>Управління запчастинами</title>
+    <style>
+        body { font-family: Arial, sans-serif; margin: 30px; }
+        table { border-collapse: collapse; width: 100%; margin-top: 20px; }
+        th, td { border: 1px solid #ccc; padding: 8px; text-align: left; }
+        th { background-color: #f2f2f2; }
+        .form-group { margin-bottom: 10px; }
+        input { padding: 6px; margin-right: 10px; }
+        button { padding: 6px 12px; cursor: pointer; }
+    </style>
+</head>
+<body>
+
+<h2>Склад автозапчастин</h2>
+<a href="/oauth2/authorization/keycloak"><button>Увійти через Keycloak (OIDC)</button></a>
+
+<hr style="margin: 20px 0;">
+
+<h3>Додати нову деталь</h3>
+<div class="form-group">
+    <input type="text" id="name" placeholder="Назва">
+    <input type="text" id="sku" placeholder="Артикул (SKU)">
+    <input type="number" id="price" placeholder="Ціна">
+    <input type="number" id="quantity" placeholder="Кількість">
+    <button onclick="createPart()">Створити</button>
+</div>
+
+<h3>Список деталей</h3>
+<button onclick="loadParts()">Оновити список</button>
+<table>
+    <thead>
+    <tr>
+        <th>ID</th>
+        <th>Назва</th>
+        <th>Артикул</th>
+        <th>Ціна</th>
+        <th>Кількість</th>
+        <th>Дія</th>
+    </tr>
+    </thead>
+    <tbody id="partsTableBody"></tbody>
+</table>
+
+<script>
+    async function loadParts() {
+        const res = await fetch('/api/parts');
+        if (res.ok) {
+            const parts = await res.json();
+            const tbody = document.getElementById('partsTableBody');
+            tbody.innerHTML = '';
+            parts.forEach(p => {
+                tbody.innerHTML += `
+                    <tr>
+                        <td>${p.id}</td>
+                        <td>${p.name}</td>
+                        <td>${p.sku}</td>
+                        <td>${p.price}</td>
+                        <td>${p.quantity}</td>
+                        <td><button onclick="deletePart(${p.id})">Видалити</button></td>
+                    </tr>
+                `;
+            });
+        } else {
+            alert('Помилка завантаження (можливо, потрібна авторизація): ' + res.status);
+        }
+    }
+
+    async function createPart() {
+        const body = {
+            name: document.getElementById('name').value,
+            sku: document.getElementById('sku').value,
+            price: parseFloat(document.getElementById('price').value),
+            quantity: parseInt(document.getElementById('quantity').value)
+        };
+        const res = await fetch('/api/parts', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(body)
+        });
+        if (res.ok) {
+            loadParts();
+        } else {
+            alert('Помилка створення: ' + res.status);
+        }
+    }
+
+    async function deletePart(id) {
+        const res = await fetch('/api/parts/' + id, { method: 'DELETE' });
+        if (res.ok) {
+            loadParts();
+        } else {
+            alert('Помилка видалення: ' + res.status);
+        }
+    }
+
+    loadParts();
+</script>
+</body>
+</html>
