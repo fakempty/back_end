@@ -7,6 +7,17 @@ spring:
     username: postgres
     password: postgres
 
+  quartz:
+    job-store-type: jdbc
+    initialize-schema: never # Вимагається за завданням: схема створюється через Liquibase
+    properties:
+      org.quartz.scheduler.instanceName: BackEnd1Scheduler
+      org.quartz.scheduler.instanceId: AUTO
+      org.quartz.jobStore.driverDelegateClass: org.quartz.impl.jdbcjobstore.PostgreSQLDelegate
+      org.quartz.jobStore.useProperties: false
+      org.quartz.jobStore.tablePrefix: QRTZ_
+      org.quartz.jobStore.isClustered: true
+
   jpa:
     hibernate:
       # Змінюємо на update, щоб уникнути помилок валідації при першому запуску, або залишаємо validate, якщо Liquibase налаштований вірно
