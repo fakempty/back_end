@@ -9,12 +9,12 @@ public class QuartzTaskService {
     @Transactional
     public void executeCleanup(String targetTable, int retentionDays) {
         // Логіка очищення (ідемпотентна: повторний запуск не зламає систему)
-        System.out.[cite: 1]println("[Quartz Service] Виконується очищення таблиці: " + targetTable + " (зберігати днів: " + retentionDays + ")");
+        System.out.println("[Quartz Service] Виконується очищення таблиці: " + targetTable + " (зберігати днів: " + retentionDays + ")");
     }
 
     @Transactional
     public void executeReportNotification(String recipient, String reportType) {
         // Логіка надсилання звіту
-        System.out.[cite: 1]println("[Quartz Service] Надсилання звіту (" + reportType + ") для отримувача: " + recipient);
+        System.out.println("[Quartz Service] Надсилання звіту (" + reportType + ") для отримувача: " + recipient);
     }
 }
