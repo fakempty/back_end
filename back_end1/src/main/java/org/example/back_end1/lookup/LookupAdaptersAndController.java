@@ -153,17 +153,17 @@ class Lab9PartLookupController {
     }
 
     @GetMapping("/{id}/price")
-    PartPriceLookup.PriceResult getPrice(@PathVariable long id) {
+    PartPriceLookup.PriceResult getPrice(@PathVariable("id") long id) {
         return priceLookup.lookupPrice(id);
     }
 
     @GetMapping("/{id}/stock")
-    PartStockLookup.StockResult getStock(@PathVariable long id) {
+    PartStockLookup.StockResult getStock(@PathVariable("id") long id) {
         return stockLookup.lookupStock(id);
     }
 
     @GetMapping("/{id}/availability")
-    PartAvailabilityLookup.AvailabilityResult getAvailability(@PathVariable long id) {
+    PartAvailabilityLookup.AvailabilityResult getAvailability(@PathVariable("id") long id) {
         return availabilityLookup.lookupAvailability(id);
     }
 }
