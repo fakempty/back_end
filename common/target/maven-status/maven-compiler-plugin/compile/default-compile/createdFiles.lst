@@ -1,0 +1,4 @@
+org\example\common\dto\PartDto.class
+org\example\common\dto\SummaryDto.class
+org\example\common\CommonMarker.class
+org\example\common\dto\ErrorResponse.class

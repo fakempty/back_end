@@ -2,7 +2,7 @@ package org.example.back_end1.service;
 
 import org.example.back_end1.aop.LogExecutionTime;
 import org.example.back_end1.dto.CreatePartRequest;
-import org.example.back_end1.dto.PartDto;
+import org.example.common.dto.PartDto;
 import org.example.back_end1.entity.Part;
 import org.example.back_end1.mapper.PartMapper;
 import org.example.back_end1.repository.PartRepository;

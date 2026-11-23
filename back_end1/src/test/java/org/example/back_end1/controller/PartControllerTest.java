@@ -1,7 +1,7 @@
 package org.example.back_end1.controller;
 
 import org.example.back_end1.dto.CreatePartRequest;
-import org.example.back_end1.dto.PartDto;
+import org.example.common.dto.PartDto;
 import org.example.back_end1.service.PartService;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;

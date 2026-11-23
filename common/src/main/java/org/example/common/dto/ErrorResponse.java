@@ -1,4 +1,4 @@
-package org.example.back_end1.dto;
+package org.example.common.dto;
 
 import java.time.LocalDateTime;
 import java.util.Map;

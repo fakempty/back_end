@@ -3,7 +3,7 @@ package org.example.back_end1.controller;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.example.back_end1.dto.CreatePartRequest;
-import org.example.back_end1.dto.PartDto;
+import org.example.common.dto.PartDto;
 import org.example.back_end1.service.PartService;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.access.prepost.PreAuthorize;
