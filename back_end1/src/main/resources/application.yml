@@ -63,3 +63,33 @@ lab9:
     host: ${LAB9_GRPC_HOST:localhost}
     port: ${LAB9_GRPC_PORT:9092}
     deadline: ${LAB9_GRPC_DEADLINE:2000ms}
+resilience4j:
+  retry:
+    instances:
+      partLookupRetry:
+        max-attempts: ${LAB10_RETRY_MAX_ATTEMPTS:3}
+        wait-duration: ${LAB10_RETRY_WAIT_DURATION:300ms}
+        retry-exceptions:
+          - org.example.back_end1.lookup.LookupServiceUnavailableException
+        ignore-exceptions:
+          - org.example.back_end1.lookup.PartNotFoundException
+  circuitbreaker:
+    instances:
+      partLookupCircuitBreaker:
+        sliding-window-type: COUNT_BASED
+        sliding-window-size: ${LAB10_CB_WINDOW_SIZE:6}
+        minimum-number-of-calls: ${LAB10_CB_MIN_CALLS:3}
+        failure-rate-threshold: ${LAB10_CB_FAILURE_RATE:50}
+        wait-duration-in-open-state: ${LAB10_CB_OPEN_WAIT:5s}
+        permitted-number-of-calls-in-half-open-state: ${LAB10_CB_HALF_OPEN_CALLS:2}
+        record-exceptions:
+          - org.example.back_end1.lookup.LookupServiceUnavailableException
+        ignore-exceptions:
+          - org.example.back_end1.lookup.PartNotFoundException
+
+lab10:
+  shedlock:
+    enabled: ${LAB10_SCHEDLOCK_ENABLED:true}
+    cron: ${LAB10_SCHEDLOCK_CRON:*/15 * * * * *}
+    lock-at-most-for: ${LAB10_SCHEDLOCK_AT_MOST_FOR:25s}
+    lock-at-least-for: ${LAB10_SCHEDLOCK_AT_LEAST_FOR:5s}

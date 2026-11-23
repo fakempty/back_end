@@ -9,18 +9,6 @@ import org.springframework.web.bind.annotation.RestControllerAdvice;
 
 import java.time.Instant;
 
-class PartNotFoundException extends RuntimeException {
-    PartNotFoundException(String message) {
-        super(message);
-    }
-}
-
-class LookupServiceUnavailableException extends RuntimeException {
-    LookupServiceUnavailableException(String message, Throwable cause) {
-        super(message, cause);
-    }
-}
-
 @RestControllerAdvice
 @Order(Ordered.HIGHEST_PRECEDENCE)
 class LookupExceptionHandler {
