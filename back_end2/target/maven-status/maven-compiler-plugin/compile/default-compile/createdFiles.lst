@@ -1,1 +1,3 @@
 org\example\back_end2\BackEnd2Application.class
+org\example\back_end2\messaging\RabbitMqConfig.class
+org\example\back_end2\messaging\PartEventConsumer.class

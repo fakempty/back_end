@@ -1,3 +1,4 @@
+org\example\common\dto\PartEventDto.class
 org\example\common\dto\PartDto.class
 org\example\common\dto\SummaryDto.class
 org\example\common\CommonMarker.class

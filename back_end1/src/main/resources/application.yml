@@ -48,3 +48,8 @@ spring:
     # Додано для запобігання збоїв при відсутності Keycloak під час запуску
     check-token-endpoint:
       enabled: false
+  rabbitmq:
+    host: ${SPRING_RABBITMQ_HOST:localhost}
+    port: ${SPRING_RABBITMQ_PORT:5672}
+    username: ${SPRING_RABBITMQ_USERNAME:guest}
+    password: ${SPRING_RABBITMQ_PASSWORD:guest}
