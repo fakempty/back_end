@@ -53,3 +53,13 @@ spring:
     port: ${SPRING_RABBITMQ_PORT:5672}
     username: ${SPRING_RABBITMQ_USERNAME:guest}
     password: ${SPRING_RABBITMQ_PASSWORD:guest}
+lab9:
+  transport: ${LAB9_TRANSPORT:http}
+  rest:
+    base-url: ${LAB9_REST_BASE_URL:http://localhost:8082}
+    connect-timeout: ${LAB9_REST_CONNECT_TIMEOUT:1000ms}
+    read-timeout: ${LAB9_REST_READ_TIMEOUT:2000ms}
+  grpc:
+    host: ${LAB9_GRPC_HOST:localhost}
+    port: ${LAB9_GRPC_PORT:9092}
+    deadline: ${LAB9_GRPC_DEADLINE:2000ms}

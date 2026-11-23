@@ -13,6 +13,10 @@
     <artifactId>back_end2</artifactId>
     <packaging>jar</packaging>
 
+    <properties>
+        <grpc.version>1.62.2</grpc.version>
+    </properties>
+
     <dependencies>
         <dependency>
             <groupId>org.example</groupId>
@@ -26,6 +30,11 @@
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-amqp</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>io.grpc</groupId>
+            <artifactId>grpc-netty-shaded</artifactId>
+            <version>${grpc.version}</version>
         </dependency>
     </dependencies>
 

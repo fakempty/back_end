@@ -1,0 +1,35 @@
+syntax = "proto3";
+
+package lab9.lookup;
+
+option java_multiple_files = true;
+option java_package = "org.example.common.grpc.lookup";
+option java_outer_classname = "PartLookupProto";
+
+service PartLookupService {
+  rpc GetPartPrice (PartIdRequest) returns (PartPriceResponse);
+  rpc GetPartStock (PartIdRequest) returns (PartStockResponse);
+  rpc GetPartAvailability (PartIdRequest) returns (PartAvailabilityResponse);
+}
+
+message PartIdRequest {
+  int64 part_id = 1;
+}
+
+message PartPriceResponse {
+  int64 part_id = 1;
+  string price = 2;
+  string currency = 3;
+}
+
+message PartStockResponse {
+  int64 part_id = 1;
+  int32 quantity = 2;
+  string warehouse = 3;
+}
+
+message PartAvailabilityResponse {
+  int64 part_id = 1;
+  bool available = 2;
+  string status = 3;
+}

@@ -1,3 +1,11 @@
-org\example\back_end2\BackEnd2Application.class
+org\example\back_end2\lookup\Lab9GrpcServerLifecycle.class
+org\example\back_end2\lookup\PartLookupCatalogService$PartRecord.class
 org\example\back_end2\messaging\RabbitMqConfig.class
+org\example\back_end2\lookup\PartLookupRestController.class
+org\example\back_end2\BackEnd2Application.class
+org\example\back_end2\lookup\PartLookupCatalogService.class
+org\example\back_end2\lookup\Lab9GrpcServerLifecycle$PartLookupGrpcImpl.class
+org\example\back_end2\lookup\PartLookupRestController$StockDto.class
+org\example\back_end2\lookup\PartLookupRestController$PriceDto.class
+org\example\back_end2\lookup\PartLookupRestController$AvailabilityDto.class
 org\example\back_end2\messaging\PartEventConsumer.class

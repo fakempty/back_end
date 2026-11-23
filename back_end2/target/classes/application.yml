@@ -8,3 +8,8 @@ spring:
     port: ${SPRING_RABBITMQ_PORT:5672}
     username: ${SPRING_RABBITMQ_USERNAME:guest}
     password: ${SPRING_RABBITMQ_PASSWORD:guest}
+lab9:
+  grpc:
+    server:
+      enabled: ${LAB9_GRPC_SERVER_ENABLED:false}
+      port: ${LAB9_GRPC_SERVER_PORT:9092}

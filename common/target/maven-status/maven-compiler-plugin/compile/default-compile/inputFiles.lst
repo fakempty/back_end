@@ -1,5 +1,15 @@
 C:\Users\kolia\OneDrive\Документы\back_end\common\src\main\java\org\example\common\CommonMarker.java
 C:\Users\kolia\OneDrive\Документы\back_end\common\src\main\java\org\example\common\dto\PartDto.java
 C:\Users\kolia\OneDrive\Документы\back_end\common\src\main\java\org\example\common\dto\PartEventDto.java
+C:\lab9_gen\java-proto\org\example\common\grpc\lookup\PartIdRequest.java
+C:\lab9_gen\java-grpc\org\example\common\grpc\lookup\PartLookupServiceGrpc.java
+C:\lab9_gen\java-proto\org\example\common\grpc\lookup\PartIdRequestOrBuilder.java
+C:\lab9_gen\java-proto\org\example\common\grpc\lookup\PartAvailabilityResponseOrBuilder.java
+C:\lab9_gen\java-proto\org\example\common\grpc\lookup\PartAvailabilityResponse.java
+C:\lab9_gen\java-proto\org\example\common\grpc\lookup\PartStockResponse.java
 C:\Users\kolia\OneDrive\Документы\back_end\common\src\main\java\org\example\common\dto\ErrorResponse.java
 C:\Users\kolia\OneDrive\Документы\back_end\common\src\main\java\org\example\common\dto\SummaryDto.java
+C:\lab9_gen\java-proto\org\example\common\grpc\lookup\PartLookupProto.java
+C:\lab9_gen\java-proto\org\example\common\grpc\lookup\PartPriceResponse.java
+C:\lab9_gen\java-proto\org\example\common\grpc\lookup\PartPriceResponseOrBuilder.java
+C:\lab9_gen\java-proto\org\example\common\grpc\lookup\PartStockResponseOrBuilder.java
