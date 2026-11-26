@@ -1,0 +1,235 @@
+--liquibase formatted sql
+
+--changeset lab11:1
+-- Audit columns for parts and new audited entities (suppliers, warehouse_zones)
+ALTER TABLE parts ADD COLUMN IF NOT EXISTS created_at TIMESTAMP WITHOUT TIME ZONE;
+ALTER TABLE parts ADD COLUMN IF NOT EXISTS created_by VARCHAR(255);
+ALTER TABLE parts ADD COLUMN IF NOT EXISTS updated_at TIMESTAMP WITHOUT TIME ZONE;
+ALTER TABLE parts ADD COLUMN IF NOT EXISTS updated_by VARCHAR(255);
+ALTER TABLE parts ADD COLUMN IF NOT EXISTS last_synced_at TIMESTAMP WITHOUT TIME ZONE;
+
+CREATE TABLE IF NOT EXISTS suppliers (
+    id BIGSERIAL PRIMARY KEY,
+    code VARCHAR(100) NOT NULL UNIQUE,
+    name VARCHAR(255) NOT NULL,
+    contact_email VARCHAR(255),
+    active BOOLEAN NOT NULL DEFAULT TRUE,
+    created_at TIMESTAMP WITHOUT TIME ZONE,
+    created_by VARCHAR(255),
+    updated_at TIMESTAMP WITHOUT TIME ZONE,
+    updated_by VARCHAR(255)
+);
+
+CREATE TABLE IF NOT EXISTS warehouse_zones (
+    id BIGSERIAL PRIMARY KEY,
+    zone_code VARCHAR(100) NOT NULL UNIQUE,
+    description VARCHAR(255),
+    capacity INTEGER NOT NULL DEFAULT 100,
+    created_at TIMESTAMP WITHOUT TIME ZONE,
+    created_by VARCHAR(255),
+    updated_at TIMESTAMP WITHOUT TIME ZONE,
+    updated_by VARCHAR(255)
+);
+
+--changeset lab11:2
+-- Hibernate Envers revision & audit tables
+CREATE SEQUENCE IF NOT EXISTS revinfo_seq START WITH 1 INCREMENT BY 50;
+
+CREATE TABLE IF NOT EXISTS revinfo (
+    rev INTEGER NOT NULL DEFAULT nextval('revinfo_seq'),
+    revtstmp BIGINT,
+    actor VARCHAR(255),
+    PRIMARY KEY (rev)
+);
+
+CREATE TABLE IF NOT EXISTS parts_aud (
+    id BIGINT NOT NULL,
+    rev INTEGER NOT NULL,
+    revtype SMALLINT,
+    name VARCHAR(255),
+    sku VARCHAR(255),
+    price NUMERIC(19, 2),
+    quantity INTEGER,
+    created_at TIMESTAMP WITHOUT TIME ZONE,
+    created_by VARCHAR(255),
+    updated_at TIMESTAMP WITHOUT TIME ZONE,
+    updated_by VARCHAR(255),
+    PRIMARY KEY (id, rev),
+    CONSTRAINT fk_parts_aud_rev FOREIGN KEY (rev) REFERENCES revinfo (rev)
+);
+
+CREATE TABLE IF NOT EXISTS suppliers_aud (
+    id BIGINT NOT NULL,
+    rev INTEGER NOT NULL,
+    revtype SMALLINT,
+    code VARCHAR(100),
+    name VARCHAR(255),
+    contact_email VARCHAR(255),
+    active BOOLEAN,
+    created_at TIMESTAMP WITHOUT TIME ZONE,
+    created_by VARCHAR(255),
+    updated_at TIMESTAMP WITHOUT TIME ZONE,
+    updated_by VARCHAR(255),
+    PRIMARY KEY (id, rev),
+    CONSTRAINT fk_suppliers_aud_rev FOREIGN KEY (rev) REFERENCES revinfo (rev)
+);
+
+CREATE TABLE IF NOT EXISTS warehouse_zones_aud (
+    id BIGINT NOT NULL,
+    rev INTEGER NOT NULL,
+    revtype SMALLINT,
+    zone_code VARCHAR(100),
+    description VARCHAR(255),
+    capacity INTEGER,
+    created_at TIMESTAMP WITHOUT TIME ZONE,
+    created_by VARCHAR(255),
+    updated_at TIMESTAMP WITHOUT TIME ZONE,
+    updated_by VARCHAR(255),
+    PRIMARY KEY (id, rev),
+    CONSTRAINT fk_warehouse_zones_aud_rev FOREIGN KEY (rev) REFERENCES revinfo (rev)
+);
+
+--changeset lab11:3
+-- Spring Batch 5 schema tables for PostgreSQL
+CREATE TABLE IF NOT EXISTS BATCH_JOB_INSTANCE (
+    JOB_INSTANCE_ID BIGINT NOT NULL PRIMARY KEY,
+    VERSION BIGINT,
+    JOB_NAME VARCHAR(100) NOT NULL,
+    JOB_KEY VARCHAR(32) NOT NULL,
+    CONSTRAINT JOB_INST_UN UNIQUE (JOB_NAME, JOB_KEY)
+);
+
+CREATE TABLE IF NOT EXISTS BATCH_JOB_EXECUTION (
+    JOB_EXECUTION_ID BIGINT NOT NULL PRIMARY KEY,
+    VERSION BIGINT,
+    JOB_INSTANCE_ID BIGINT NOT NULL,
+    CREATE_TIME TIMESTAMP NOT NULL,
+    START_TIME TIMESTAMP DEFAULT NULL,
+    END_TIME TIMESTAMP DEFAULT NULL,
+    STATUS VARCHAR(10),
+    EXIT_CODE VARCHAR(2500),
+    EXIT_MESSAGE VARCHAR(2500),
+    LAST_UPDATED TIMESTAMP,
+    CONSTRAINT JOB_INST_EXEC_FK FOREIGN KEY (JOB_INSTANCE_ID)
+        REFERENCES BATCH_JOB_INSTANCE(JOB_INSTANCE_ID)
+);
+
+CREATE TABLE IF NOT EXISTS BATCH_JOB_EXECUTION_PARAMS (
+    JOB_EXECUTION_ID BIGINT NOT NULL,
+    PARAMETER_NAME VARCHAR(100) NOT NULL,
+    PARAMETER_TYPE VARCHAR(100) NOT NULL,
+    PARAMETER_VALUE VARCHAR(2500),
+    IDENTIFYING CHAR(1) NOT NULL,
+    CONSTRAINT JOB_EXEC_PARAMS_FK FOREIGN KEY (JOB_EXECUTION_ID)
+        REFERENCES BATCH_JOB_EXECUTION(JOB_EXECUTION_ID)
+);
+
+CREATE TABLE IF NOT EXISTS BATCH_STEP_EXECUTION (
+    STEP_EXECUTION_ID BIGINT NOT NULL PRIMARY KEY,
+    VERSION BIGINT NOT NULL,
+    STEP_NAME VARCHAR(100) NOT NULL,
+    JOB_EXECUTION_ID BIGINT NOT NULL,
+    CREATE_TIME TIMESTAMP NOT NULL,
+    START_TIME TIMESTAMP DEFAULT NULL,
+    END_TIME TIMESTAMP DEFAULT NULL,
+    STATUS VARCHAR(10),
+    COMMIT_COUNT BIGINT,
+    READ_COUNT BIGINT,
+    FILTER_COUNT BIGINT,
+    WRITE_COUNT BIGINT,
+    READ_SKIP_COUNT BIGINT,
+    WRITE_SKIP_COUNT BIGINT,
+    PROCESS_SKIP_COUNT BIGINT,
+    ROLLBACK_COUNT BIGINT,
+    EXIT_CODE VARCHAR(2500),
+    EXIT_MESSAGE VARCHAR(2500),
+    LAST_UPDATED TIMESTAMP,
+    CONSTRAINT JOB_EXEC_STEP_FK FOREIGN KEY (JOB_EXECUTION_ID)
+        REFERENCES BATCH_JOB_EXECUTION(JOB_EXECUTION_ID)
+);
+
+CREATE TABLE IF NOT EXISTS BATCH_STEP_EXECUTION_CONTEXT (
+    STEP_EXECUTION_ID BIGINT NOT NULL PRIMARY KEY,
+    SHORT_CONTEXT VARCHAR(2500) NOT NULL,
+    SERIALIZED_CONTEXT TEXT,
+    CONSTRAINT STEP_EXEC_CTX_FK FOREIGN KEY (STEP_EXECUTION_ID)
+        REFERENCES BATCH_STEP_EXECUTION(STEP_EXECUTION_ID)
+);
+
+CREATE TABLE IF NOT EXISTS BATCH_JOB_EXECUTION_CONTEXT (
+    JOB_EXECUTION_ID BIGINT NOT NULL PRIMARY KEY,
+    SHORT_CONTEXT VARCHAR(2500) NOT NULL,
+    SERIALIZED_CONTEXT TEXT,
+    CONSTRAINT JOB_EXEC_CTX_FK FOREIGN KEY (JOB_EXECUTION_ID)
+        REFERENCES BATCH_JOB_EXECUTION(JOB_EXECUTION_ID)
+);
+
+CREATE SEQUENCE IF NOT EXISTS BATCH_STEP_EXECUTION_SEQ START WITH 1 INCREMENT BY 1 NO MINVALUE NO MAXVALUE CACHE 1;
+CREATE SEQUENCE IF NOT EXISTS BATCH_JOB_EXECUTION_SEQ START WITH 1 INCREMENT BY 1 NO MINVALUE NO MAXVALUE CACHE 1;
+CREATE SEQUENCE IF NOT EXISTS BATCH_JOB_SEQ START WITH 1 INCREMENT BY 1 NO MINVALUE NO MAXVALUE CACHE 1;
+
+--changeset lab11:4
+-- Tracking table for imported CSV files (409 on duplicate unless forced)
+CREATE TABLE IF NOT EXISTS csv_import_history (
+    id BIGSERIAL PRIMARY KEY,
+    file_name VARCHAR(255) NOT NULL,
+    file_hash VARCHAR(128) NOT NULL,
+    status VARCHAR(32) NOT NULL,
+    job_execution_id BIGINT,
+    imported_by VARCHAR(255),
+    created_at TIMESTAMP WITHOUT TIME ZONE NOT NULL DEFAULT NOW()
+);
+
+CREATE INDEX IF NOT EXISTS idx_csv_import_history_hash ON csv_import_history(file_hash);
+
+--changeset lab11:5 splitStatements:false
+-- Bonus (*): DB-level versioning function and trigger for parts
+CREATE TABLE IF NOT EXISTS parts_db_version_history (
+    history_id BIGSERIAL PRIMARY KEY,
+    part_id BIGINT NOT NULL,
+    version_no INTEGER NOT NULL,
+    operation VARCHAR(10) NOT NULL,
+    name VARCHAR(255),
+    sku VARCHAR(255),
+    price NUMERIC(19, 2),
+    quantity INTEGER,
+    changed_by VARCHAR(255),
+    changed_at TIMESTAMP WITHOUT TIME ZONE NOT NULL DEFAULT NOW()
+);
+
+CREATE OR REPLACE FUNCTION fn_record_part_version()
+RETURNS TRIGGER AS $$
+DECLARE
+    next_ver INTEGER;
+    actor_name VARCHAR(255);
+BEGIN
+    SELECT COALESCE(MAX(version_no), 0) + 1
+      INTO next_ver
+      FROM parts_db_version_history
+     WHERE part_id = COALESCE(NEW.id, OLD.id);
+
+    IF TG_OP = 'DELETE' THEN
+        actor_name := COALESCE(OLD.updated_by, OLD.created_by, current_user);
+        INSERT INTO parts_db_version_history (
+            part_id, version_no, operation, name, sku, price, quantity, changed_by, changed_at
+        ) VALUES (
+            OLD.id, next_ver, TG_OP, OLD.name, OLD.sku, OLD.price, OLD.quantity, actor_name, NOW()
+        );
+        RETURN OLD;
+    ELSE
+        actor_name := COALESCE(NEW.updated_by, NEW.created_by, current_user);
+        INSERT INTO parts_db_version_history (
+            part_id, version_no, operation, name, sku, price, quantity, changed_by, changed_at
+        ) VALUES (
+            NEW.id, next_ver, TG_OP, NEW.name, NEW.sku, NEW.price, NEW.quantity, actor_name, NOW()
+        );
+        RETURN NEW;
+    END IF;
+END;
+$$ LANGUAGE plpgsql;
+
+DROP TRIGGER IF EXISTS trg_parts_versioning ON parts;
+CREATE TRIGGER trg_parts_versioning
+AFTER INSERT OR UPDATE OR DELETE ON parts
+FOR EACH ROW
+EXECUTE FUNCTION fn_record_part_version();

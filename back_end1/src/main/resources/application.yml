@@ -48,6 +48,18 @@ spring:
     # Додано для запобігання збоїв при відсутності Keycloak під час запуску
     check-token-endpoint:
       enabled: false
+
+  batch:
+    job:
+      enabled: false
+    jdbc:
+      initialize-schema: never
+
+lab11:
+  batch:
+    chunk-size: 5
+    skip-limit: 10
+    input-dir: C:/lab11_imports
   rabbitmq:
     host: ${SPRING_RABBITMQ_HOST:localhost}
     port: ${SPRING_RABBITMQ_PORT:5672}

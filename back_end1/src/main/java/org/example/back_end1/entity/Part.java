@@ -1,11 +1,17 @@
 package org.example.back_end1.entity;
 
 import jakarta.persistence.*;
+import org.example.back_end1.auditing.AuditableEntity;
+import org.hibernate.envers.Audited;
+import org.hibernate.envers.NotAudited;
+
 import java.math.BigDecimal;
+import java.time.LocalDateTime;
 
 @Entity
 @Table(name = "parts")
-public class Part {
+@Audited
+public class Part extends AuditableEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -15,6 +21,11 @@ public class Part {
     private String sku;
     private BigDecimal price;
     private Integer quantity;
+
+    // Виключено з аудиту Envers: технічний час останньої синхронізації/кеш-звірки не є бізнес-зміною товару
+    @NotAudited
+    @Column(name = "last_synced_at")
+    private LocalDateTime lastSyncedAt;
 
     public Part() {}
 
@@ -32,4 +43,7 @@ public class Part {
 
     public Integer getQuantity() { return quantity; }
     public void setQuantity(Integer quantity) { this.quantity = quantity; }
+
+    public LocalDateTime getLastSyncedAt() { return lastSyncedAt; }
+    public void setLastSyncedAt(LocalDateTime lastSyncedAt) { this.lastSyncedAt = lastSyncedAt; }
 }

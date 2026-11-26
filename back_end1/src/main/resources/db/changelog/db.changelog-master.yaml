@@ -1,5 +1,7 @@
 databaseChangeLog:
-  - include:
+- include:
       file: db/changelog/changes/001-init-schema.sql
-  - include:
+- include:
       file: db/changelog/changes/003-lab10-idempotency-and-shedlock.sql
+- include:
+      file: db/changelog/changes/004-lab11-auditing-and-batch.sql

@@ -1,5 +1,9 @@
 package org.example.back_end1.controller;
 
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.server.ResponseStatusException;
+import java.util.Map;
+
 import org.example.common.dto.ErrorResponse;
 import org.springframework.http.HttpStatus;
 import org.springframework.validation.FieldError;
@@ -29,6 +33,16 @@ public class GlobalExceptionHandler {
                 "Invalid request parameters",
                 errors
         );
+    }
+
+    @ExceptionHandler(ResponseStatusException.class)
+    public ResponseEntity<Map<String, Object>> handleResponseStatus(ResponseStatusException ex) {
+        String reason = ex.getReason() != null ? ex.getReason() : ex.getStatusCode().toString();
+        return ResponseEntity.status(ex.getStatusCode())
+                .body(Map.of(
+                        "status", ex.getStatusCode().value(),
+                        "error", reason
+                ));
     }
 
     @ExceptionHandler(Exception.class)
