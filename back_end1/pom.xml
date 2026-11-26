@@ -1,23 +1,18 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<project xmlns="http://maven.apache.org/POM/4.0.0"
-         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+<?xml version="1.0" encoding="utf-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
-
     <parent>
         <groupId>org.example</groupId>
         <artifactId>back_end-parent</artifactId>
         <version>1.0-SNAPSHOT</version>
     </parent>
-
     <artifactId>back_end1</artifactId>
     <packaging>jar</packaging>
-
     <properties>
         <lombok.version>1.18.32</lombok.version>
         <mapstruct.version>1.5.5.Final</mapstruct.version>
+        <openhtmltopdf.version>1.1.117</openhtmltopdf.version>
     </properties>
-
     <dependencies>
         <dependency>
             <groupId>org.example</groupId>
@@ -75,7 +70,7 @@
             <artifactId>mapstruct</artifactId>
             <version>${mapstruct.version}</version>
         </dependency>
-            <dependency>
+        <dependency>
             <groupId>io.grpc</groupId>
             <artifactId>grpc-netty-shaded</artifactId>
             <version>1.62.2</version>
@@ -107,8 +102,16 @@
             <groupId>org.hibernate.orm</groupId>
             <artifactId>hibernate-envers</artifactId>
         </dependency>
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-freemarker</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>io.github.openhtmltopdf</groupId>
+            <artifactId>openhtmltopdf-pdfbox</artifactId>
+            <version>${openhtmltopdf.version}</version>
+        </dependency>
     </dependencies>
-
     <build>
         <plugins>
             <plugin>
@@ -118,6 +121,7 @@
                 <configuration>
                     <source>${java.version}</source>
                     <target>${java.version}</target>
+                    <parameters>true</parameters>
                     <annotationProcessorPaths>
                         <path>
                             <groupId>org.projectlombok</groupId>

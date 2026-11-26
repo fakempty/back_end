@@ -105,3 +105,11 @@ lab10:
     cron: ${LAB10_SCHEDLOCK_CRON:*/15 * * * * *}
     lock-at-most-for: ${LAB10_SCHEDLOCK_AT_MOST_FOR:25s}
     lock-at-least-for: ${LAB10_SCHEDLOCK_AT_LEAST_FOR:5s}
+lab12:
+  reporting:
+    font-classpath: classpath:fonts/DejaVuSans.ttf
+    zone-id: Europe/Kyiv
+    vat-rate: 0.20
+    max-admin-pdf-rows: 100
+    csv-page-size: 500
+    storage-dir: C:/lab12_exports
